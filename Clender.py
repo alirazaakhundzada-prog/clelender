@@ -1,5 +1,4 @@
-import tkinter as tk
-from tkinter import messagebox
+import streamlit as st
 
 # ---------------- DATE LOGIC ----------------
 
@@ -80,42 +79,26 @@ def عیسوی_به_شمسی(gy, gm, gd):
 
     return jy, jm + 1, j_day_no + 1
 
-# ---------------- GUI ----------------
+# ---------------- STREAMLIT GUI ----------------
 
-def convert_jalali():
+st.title("Jalali ↔ Gregorian Converter")
+
+# Input for Jalali
+j_date = st.text_input("Jalali (YYYY-MM-DD)")
+if st.button("Convert to Gregorian"):
     try:
-        y,m,d = map(int, j_entry.get().split("-"))
-        gy,gm,gd = شمسی_به_عیسوی(y,m,d)
-        result.set(f"{gy}-{gm:02}-{gd:02}")
+        y, m, d = map(int, j_date.split("-"))
+        gy, gm, gd = شمسی_به_عیسوی(y, m, d)
+        st.success(f"Gregorian: {gy}-{gm:02}-{gd:02}")
     except:
-        messagebox.showerror("Error", "Invalid Jalali date")
+        st.error("Invalid Jalali date")
 
-def convert_gregorian():
+# Input for Gregorian
+g_date = st.text_input("Gregorian (YYYY-MM-DD)")
+if st.button("Convert to Jalali"):
     try:
-        y,m,d = map(int, g_entry.get().split("-"))
-        jy,jm,jd = عیسوی_به_شمسی(y,m,d)
-        result.set(f"{jy}-{jm:02}-{jd:02}")
+        y, m, d = map(int, g_date.split("-"))
+        jy, jm, jd = عیسوی_به_شمسی(y, m, d)
+        st.success(f"Jalali: {jy}-{jm:02}-{jd:02}")
     except:
-        messagebox.showerror("Error", "Invalid Gregorian date")
-
-root = tk.Tk()
-root.title("Jalali ↔ Gregorian Converter")
-root.geometry("420x240")
-root.resizable(False, False)
-
-tk.Label(root, text="Jalali (YYYY-MM-DD)").pack()
-j_entry = tk.Entry(root, justify="center")
-j_entry.pack()
-
-tk.Button(root, text="Convert to Gregorian", command=convert_jalali).pack(pady=5)
-
-tk.Label(root, text="Gregorian (YYYY-MM-DD)").pack()
-g_entry = tk.Entry(root, justify="center")
-g_entry.pack()
-
-tk.Button(root, text="Convert to Jalali", command=convert_gregorian).pack(pady=5)
-
-result = tk.StringVar()
-tk.Entry(root, textvariable=result, justify="center", state="readonly").pack(pady=10)
-
-root.mainloop()
+        st.error("Invalid Gregorian date")
